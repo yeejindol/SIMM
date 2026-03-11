@@ -1,7 +1,7 @@
 CREATE TYPE ADRECA AS OBJECT (
-codi_postal NUMBER,
 carrer VARCHAR(50),
-ciutat VARCHAR(10)
+ciutat VARCHAR(10),
+codi_postal NUMBER
 );
 
 CREATE TYPE TELEFON AS OBJECT (
