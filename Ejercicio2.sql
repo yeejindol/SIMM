@@ -84,6 +84,7 @@ CREATE OR REPLACE TYPE BODY Administratiu AS
     END;
 END;
 /
+
 -- 5. Subtypes of Alumne: AlumneGrau & AlumneMaster
 CREATE OR REPLACE TYPE AlumneGrau UNDER Alumne (
     titulacio VARCHAR2(100),
@@ -234,4 +235,5 @@ FROM Taula_AlumneGrau ag;
 -- 6. AlumneMaster (Alumno de Máster): comprobar resum_estudis() (Resumen de estudios)
 SELECT am.nom, am.resum_estudis() AS resumen_estudios 
 FROM Taula_AlumneMaster am;
+
 
