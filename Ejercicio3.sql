@@ -34,7 +34,13 @@ CREATE OR REPLACE TYPE Empleat AS OBJECT(
     dataContracte DATE,
     telefon VARCHAR2(12),
     MEMBER FUNCTION antiguitat RETURN NUMBER
+
 ) NOT FINAL;
+/
+
+CREATE TABLE taula_empleats OF Empleat (
+    dni PRIMARY KEY
+);
 /
 
 CREATE OR REPLACE TYPE CursActiu UNDER Curs(
@@ -47,7 +53,7 @@ MEMBER FUNCTION modulActual RETURN VARCHAR2
 
 CREATE OR REPLACE TYPE CursHistoric UNDER Curs(
  dataFinal DATE,
- valoracio VARCHAR2(10)
+ valoracio NUMBER
 );
 /
 
@@ -99,4 +105,13 @@ CREATE OR REPLACE TYPE ModulsCurs AS OBJECT (
     ref_cursActiu REF CursActiu,
     ref_modul REF Modul
 );
+/
+
+CREATE TABLE taula_coordina OF Coordina;
+/
+
+CREATE TABLE taula_participa OF Participa;
+/
+
+CREATE TABLE taula_moduls_curs OF ModulsCurs;
 /
