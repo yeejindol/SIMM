@@ -129,3 +129,24 @@ INSERT INTO taula_empleats VALUES (Formador('17382S8N', 'Jose', 'Luis','10-10-20
 INSERT INTO taula_empleats VALUES (Coordinador('2678273B', 'Gerard', 'Perez','12-03-2026', '18392628'));
 INSERT INTO taula_empleats VALUES (Tecnic('3782627G', 'Jordi', 'Vila','22-02-2022', '67822828'));
 
+-- Insertar datos en Cursos (incluyendo CursActiu y CursHistoric)
+INSERT INTO taula_cursos VALUES (CursActiu('C01', 'Java OO', 100, 500, TO_DATE('01-01-2026','DD-MM-YYYY'), TO_DATE('01-06-2026','DD-MM-YYYY'), 'Online'));
+INSERT INTO taula_cursos VALUES (CursHistoric('C02', 'SQL Basic', 40, 150, TO_DATE('20-12-2025','DD-MM-YYYY'), 9));
+
+-- Insertar datos en la tabla Coordina (Asociación Curs y Empleat)
+INSERT INTO taula_coordina SELECT REF(c), REF(e) 
+FROM taula_cursos c, taula_empleats e 
+WHERE c.idCurs = 'C01' AND e.dni = '2678273B';
+
+-- Insertar datos en la tabla Participa (Asociación Curs y Empleat)
+INSERT INTO taula_participa SELECT REF(c), REF(e) 
+FROM taula_cursos c, taula_empleats e 
+WHERE c.idCurs = 'C01' AND e.dni = '17382S8N';
+
+-- Insertar datos en la tabla ModulsCurs (Asociación CursActiu y Modul)
+INSERT INTO taula_moduls_curs SELECT TREAT(REF(c) AS REF CursActiu), REF(m) 
+FROM taula_cursos c, taula_moduls m 
+WHERE c.idCurs = 'C01' AND m.idModul = 'M123';
+
+
+
