@@ -125,7 +125,7 @@ INSERT INTO taula_moduls VALUES ('M123', 'Base de datos', '01-02-2026','01-05-20
 INSERT INTO taula_moduls VALUES ('M122', 'Multimedia', '05-02-2026', '10-06-2026');
 
 --Insertar datos en Empleados
-INSERT INTO taula_empleats VALUES (Formador('17382S8N', 'Jose', 'Luis','10-10-2025','1123389');
-INSERT INTO taula_empleats VALUES (Coordinador('2678273B', 'Gerard', 'Perez','12-03-2026', '18392628');
-INSERT INTO taula_empleats VALUES (Tecnic('3782627G', 'Jordi', 'Vila','22-02-2022', '67822828');
+INSERT INTO taula_empleats VALUES (Formador('17382S8N', 'Jose', 'Luis','10-10-2025','1123389'));
+INSERT INTO taula_empleats VALUES (Coordinador('2678273B', 'Gerard', 'Perez','12-03-2026', '18392628'));
+INSERT INTO taula_empleats VALUES (Tecnic('3782627G', 'Jordi', 'Vila','22-02-2022', '67822828'));
 

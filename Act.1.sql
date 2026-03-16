@@ -16,7 +16,7 @@ codi NUMBER,
 nom VARCHAR2(50),
 adreca ADRECA,
 vec_telefons VEC_TELEFONS,
-correu_electronic VARCHAR(50),
+correu_electronic VARCHAR(50)
 );
 
 CREATE TYPE MATERIAL AS OBJECT (
