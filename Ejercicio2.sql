@@ -236,4 +236,39 @@ FROM Taula_AlumneGrau ag;
 SELECT am.nom, am.resum_estudis() AS resumen_estudios 
 FROM Taula_AlumneMaster am;
 
+-- 8. Taula PERSONA: insertar objetos de diferentes subclases y comprobar el acceso
+
+INSERT INTO Taula_Persona VALUES (
+    Investigador(8, '88888888H', 'Dr. Smith', 'Calle Investigacion 5', '600888888', 3000, TO_DATE('01-01-2010', 'DD-MM-YYYY'), 'smith@corp.com', 'Ciencia', 'Física', 20)
+);
+
+INSERT INTO Taula_Persona VALUES (
+    AlumneGrau(9, '99999999I', 'Marc Resoli', 'Calle Estudiante 12', '600999999', 'EXP-999', 'marc@uni.edu', TO_DATE('05-05-2005', 'DD-MM-YYYY'), 'Matemàtiques')
+);
+
+INSERT INTO Taula_Persona VALUES (
+    Administratiu(10, '10101010J', 'Carla Gomez', 'Calle Admin 3', '600101010', 1800, TO_DATE('15-09-2022', 'DD-MM-YYYY'), 'carla@corp.com', 'Logística', 'Gestora', 'Parcial')
+);
+
+-- Comprobar el acceso a cada tipo diferente mediante TREAT e IS OF
+SELECT 
+    p.nom, 
+    p.dni,
+    CASE 
+        WHEN VALUE(p) IS OF (Investigador) THEN 'Investigador: ' || TREAT(VALUE(p) AS Investigador).especialitat
+        WHEN VALUE(p) IS OF (AlumneGrau) THEN 'AlumneGrau: ' || TREAT(VALUE(p) AS AlumneGrau).titulacio
+        WHEN VALUE(p) IS OF (Administratiu) THEN 'Administratiu: ' || TREAT(VALUE(p) AS Administratiu).carrec
+        ELSE 'Persona Base'
+    END AS detalle_especifico,
+    CASE 
+        WHEN VALUE(p) IS OF (Investigador) THEN TREAT(VALUE(p) AS Investigador).nivell_recerca()
+        WHEN VALUE(p) IS OF (Administratiu) THEN TO_CHAR(TREAT(VALUE(p) AS Administratiu).sou_anual())
+        ELSE 'N/A'
+    END AS resultado_metodo
+FROM Taula_Persona p
+WHERE p.codi >= 8;
+
+
+
+
 
