@@ -163,8 +163,6 @@ BEGIN
     WHERE DEREF(tc.ref_curs).idCurs = SELF.idCurs;
     
     RETURN nombre || ' ' || apellidos;
-    
-    
 END;
 
 
