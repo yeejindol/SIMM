@@ -149,4 +149,21 @@ FROM taula_cursos c, taula_moduls m
 WHERE c.idCurs = 'C01' AND m.idModul = 'M123';
 
 
+-- IMPLEMENTAR LOS METODOS DE LAS CLASES CON CREATE OR REPLACE TYPE BODY
+
+-- 1. Metodo coordinador, muestrará el nombre y apellidos del coordinador del curso.
+
+CREATE TYPE BODY Curs AS MEMBER FUNCTION coordinador RETURN VARCHAR2 IS 
+nombre VARCHAR(25);
+apellido VARCHAR(25);
+BEGIN
+    SELECT DEREF (tc.ref_empleat).nom, DEREF(tc.ref_empleat).cognoms
+    INTO nombre, apellidos
+    FROM taula_coordina tc
+    WHERE DEREF(tc.ref_curs).idCurs = SELF.idCurs;
+    
+    RETURN nombre || ' ' || apellidos;
+END;
+
+
 
