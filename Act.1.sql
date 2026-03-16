@@ -49,19 +49,18 @@ CREATE OR REPLACE TYPE LINIA_COMPRA AS OBJECT (
 
 -- 6-1. Implementar la lógica del método subtotal para calcular el precio de la línea
 CREATE OR REPLACE TYPE BODY LINIA_COMPRA AS
-    MEMBER FUNCTION subtotal RETURN NUMBER IS
-        v_material MATERIAL;
+    MEMBER FUNCTION subtotal RETURN NUMBER IS v_material MATERIAL;
     BEGIN
         -- Obtener los datos del material usando la referencia (REF)
-        SELECT DEREF(self.ref_material) INTO v_material FROM DUAL;
+        SELECT DEREF(ref_material) INTO v_material FROM DUAL;
         -- Calcular: (cantidad * coste unitario) - descuento
-        RETURN (self.quantitat * v_material.cost_unitari) - self.descompte;
+        RETURN (quantitat * v_material.cost_unitari) - descompte;
     END;
 END;
 /
 
--- 7. Crear el tipo tabla anidada para las líneas de compra
-CREATE OR REPLACE TYPE linies AS TABLE OF LINIA_COMPRA;
+-- 7. Crear el array para las líneas de compra  
+CREATE OR REPLACE TYPE linies AS VARRAY(100) OF LINIA_COMPRA;
 /
 
 -- 8. Crear el objeto Compra (Se añade la declaración del método cost_total)
@@ -74,17 +73,15 @@ CREATE OR REPLACE TYPE COMPRA AS OBJECT (
 );
 /
 
--- 8-1. Implementar la lógica del método cost_total para sumar todos los subtotales
+-- 8-1. Implementar la lógica del método cost_total 
 CREATE OR REPLACE TYPE BODY COMPRA AS
     MEMBER FUNCTION cost_total RETURN NUMBER IS
-        v_total NUMBER := 0;
+        v_total NUMBER; -- Declarar variable básica
     BEGIN
-        IF self.taula_linies IS NOT NULL THEN
-            -- Recorrer todas las líneas y sumar los subtotales
-            FOR i IN 1..self.taula_linies.COUNT LOOP
-                v_total := v_total + self.taula_linies(i).subtotal();
-            END LOOP;
-        END IF;
+        -- Usar la función SUM
+        SELECT SUM(l.subtotal()) INTO v_total
+        FROM TABLE(taula_linies) l;
+        
         RETURN v_total;
     END;
 END;
@@ -94,10 +91,8 @@ END;
 CREATE TABLE Materiales OF MATERIAL(PRIMARY KEY(codi));
 CREATE TABLE Proveidores OF PROVEIDOR(PRIMARY KEY(codi));
 
--- OBLIGATORIO: Añadir la cláusula NESTED TABLE para almacenar los datos de la colección
-CREATE TABLE Compras OF COMPRA(PRIMARY KEY(codi))
-    NESTED TABLE taula_linies STORE AS taula_linies_store;
-
+-- Crear la tabla Compras
+CREATE TABLE Compras OF COMPRA(PRIMARY KEY(codi));
 
 -- Task 3: Inserción de datos
 
