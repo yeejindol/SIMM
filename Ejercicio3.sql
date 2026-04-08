@@ -164,7 +164,47 @@ BEGIN
     
     RETURN nombre || ' ' || apellidos;
     
+    EXCEPTRION WHEN NO_DATA_FOUND THEN RETURN 'Sin assignar';
+    END;
+    
 END;
 
+--2. Metodo antiguidad, calculará la diferencia en años entre sysdate(hoy) y dataContracte
+CREATE OR REPLACE TYPE BODY Emplear AS
+    MEMBER FUNCTION antiguitat RETURN NUMBER IS
+        BEGIN
+            RETURN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM SELF.dataContracte);
+        END;
+    END;
 
+--4. Metodo ModulActual, torna el nombre del modulo del curso activo que tiene como dataFi= null
+
+CREATE OR REPLACE TYPE BODY CursActiu AS
+    MEMBER FUNCTION ModulActual RETURN VARCHAR IS
+        nom VARCHAR(50);
+    BEGIN
+        SELECT DEREF(t.ref_modul).nom INTO nom
+        FROM taula_moduls_curs t
+        WHERE DEREF(t.ref_cursActiu).idCurs = SELF.idCurs
+        AND DEREF(t.ref_modul).dataFi IS NULL;
+        
+        RETURN nom;
+    
+    EXCEPTION WHEN NO_DATA_FOUND THEN RETURN 'Cap';
+    END;
+    
+END;
+
+--6. Metodo numCursos de Modul que cuenta cuantos cursos aparece
+
+CREATE OR REPLACE TYPE BODY Client AS
+    MEMBER FUNCTION numCursos RETURN NUMBER IS
+    total NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO total FROM taula_moduls_curs
+        WHERE DEREF(ref_modul).idModul = SELF.idModul;
+        RETURN total;
+    END;
+END;
+    
 
