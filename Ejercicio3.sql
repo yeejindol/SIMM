@@ -152,28 +152,43 @@ WHERE c.idCurs = 'C01' AND m.idModul = 'M123';
 -- IMPLEMENTAR LOS METODOS DE LAS CLASES CON CREATE OR REPLACE TYPE BODY
 
 -- 1. Metodo coordinador, muestrará el nombre y apellidos del coordinador del curso.
-
-CREATE TYPE BODY Curs AS MEMBER FUNCTION coordinador RETURN VARCHAR2 IS 
-nombre VARCHAR(25);
-apellido VARCHAR(25);
-BEGIN
-    SELECT DEREF (tc.ref_empleat).nom, DEREF(tc.ref_empleat).cognoms
-    INTO nombre, apellidos
-    FROM taula_coordina tc
-    WHERE DEREF(tc.ref_curs).idCurs = SELF.idCurs;
-    
-    RETURN nombre || ' ' || apellidos;
-    
-    EXCEPTRION WHEN NO_DATA_FOUND THEN RETURN 'Sin assignar';
+CREATE OR REPLACE TYPE BODY Curs AS 
+    MEMBER FUNCTION coordinador RETURN VARCHAR2 IS 
+        nombre VARCHAR2(25);
+        apellidos VARCHAR2(25); 
+    BEGIN
+         SELECT DEREF(tc.ref_empleat).nom, DEREF(tc.ref_empleat).cognoms
+        INTO nombre, apellidos
+        FROM taula_coordina tc
+        WHERE DEREF(tc.ref_curs).idCurs = SELF.idCurs;
+        
+        RETURN nombre || ' ' || apellidos;
+        
+    EXCEPTION WHEN NO_DATA_FOUND THEN RETURN 'Sin asignar';
     END;
-    
+     MEMBER FUNCTION actiu RETURN VARCHAR2 IS
+        v_conteo NUMBER;
+    BEGIN
+         SELECT COUNT(*) INTO v_conteo 
+        FROM taula_cursos c 
+        WHERE c.idCurs = SELF.idCurs 
+        AND VALUE(c) IS OF (CursActiu);
+
+        IF v_conteo > 0 THEN 
+            RETURN 'T'; 
+        ELSE 
+            RETURN 'F'; 
+        END IF;
+    END;
 END;
+/
+
 
 --2. Metodo antiguidad, calculará la diferencia en años entre sysdate(hoy) y dataContracte
-CREATE OR REPLACE TYPE BODY Emplear AS
+CREATE OR REPLACE TYPE BODY Empleat AS
     MEMBER FUNCTION antiguitat RETURN NUMBER IS
         BEGIN
-            RETURN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM SELF.dataContracte);
+            RETURN FLOOR(MONTHS_BETWEEN(SYSDATE, SELF.dataContracte) / 12);
         END;
     END;
 
@@ -198,13 +213,31 @@ END;
 --6. Metodo numCursos de Modul que cuenta cuantos cursos aparece
 
 CREATE OR REPLACE TYPE BODY Client AS
-    MEMBER FUNCTION numCursos RETURN NUMBER IS
-    total NUMBER;
+   MEMBER FUNCTION numCursos RETURN NUMBER IS
+        v_total NUMBER;
     BEGIN
-        SELECT COUNT(*) INTO total FROM taula_moduls_curs
-        WHERE DEREF(ref_modul).idModul = SELF.idModul;
-        RETURN total;
+        SELECT COUNT(*) INTO v_total 
+        FROM taula_participa tp
+        WHERE DEREF(tp.ref_curs).idCurs IS NOT NULL;
+        
+        RETURN v_total;
     END;
 END;
-    
+/
+-- 7. Mètode numCursos de Modul (Correcció)
+CREATE OR REPLACE TYPE BODY Modul AS
+    MEMBER FUNCTION numCursos RETURN NUMBER IS
+        v_total NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_total 
+        FROM taula_moduls_curs
+        WHERE DEREF(ref_modul).idModul = SELF.idModul;
+        
+        RETURN v_total;
+    END;
+END;
+/
+
+
+
 
