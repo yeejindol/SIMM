@@ -238,6 +238,38 @@ CREATE OR REPLACE TYPE BODY Modul AS
 END;
 /
 
+--COMPROBAR QUE FUNCIONAN BIEN
+
+
+--1. Ver cuantos cursos tiene cada cliente
+SELECT nom, nif, numCursos()
+FROM taula_cursos c
+WHERE VALUE(c) IS OF (CursActiu);
+
+--2. Ver si los cursos están activos o no
+
+SELECT nom, actiu() AS es_activo
+FROM taula_cursos;
+
+--3. Ver modulo actual de los cursos que si estan activos
+SELECT c.nom, TREAT(VALUE(c) AS CursActiu).modulActual() AS modulo_hoy
+FROM taula_cursos c
+WHERE VALUE(c) IS OF (CursActiu);
+
+--4.Ver modulo actual de los cursos activos
+SELECT nom, TREAT(VALUE(c) AS CursActiu).modulActual() AS modulo_activo
+FROM taula_cursos c
+WHERE VALUE(c) IS OF (CursActiu);
+
+--5. Ver en cuantos cursos aperece cada modulo
+SELECT nom, numCursos() AS aparecido
+FROM taula_moduls
+
+--6. Ver nombre del coordinado y si el curso es activo
+SELECT nom, coordinadir() AS responsable, actiu() AS activo
+FROM taula_cursos;
+
+
 
 
 
