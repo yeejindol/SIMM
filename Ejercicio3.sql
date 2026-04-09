@@ -1,10 +1,10 @@
-DROP TABLE taula_coordina;
-DROP TABLE taula_participa;
-DROP TABLE taula_moduls_curs;
-DROP TABLE taula_clients;
-DROP TABLE taula_cursos;
-DROP TABLE taula_empleats;
-DROP TABLE taula_moduls;
+DROP TABLE taula_coordina CASCADE CONSTRAINTS;
+DROP TABLE taula_participa CASCADE CONSTRAINTS;
+DROP TABLE taula_moduls_curs CASCADE CONSTRAINTS;
+DROP TABLE taula_clients CASCADE CONSTRAINTS;
+DROP TABLE taula_cursos CASCADE CONSTRAINTS;
+DROP TABLE taula_empleats CASCADE CONSTRAINTS;
+DROP TABLE taula_moduls CASCADE CONSTRAINTS;
 
 -- Borramos los tipos en orden inverso a su herencia
 DROP TYPE ModulsCurs;
@@ -22,9 +22,9 @@ DROP TYPE Client;
 /
 
 CREATE OR REPLACE TYPE Client AS OBJECT(
-    nif VARCHAR2(10),
-    nom VARCHAR2(10),
-    adreca VARCHAR2(10),
+    nif VARCHAR2(50),
+    nom VARCHAR2(50),
+    adreca VARCHAR2(100),
     telefon VARCHAR2(12),
     MEMBER FUNCTION numCursos RETURN NUMBER 
 );
@@ -37,7 +37,7 @@ CREATE TABLE taula_clients OF Client (
 
 CREATE OR REPLACE TYPE Curs AS OBJECT(
     idCurs VARCHAR2(10),
-    nom VARCHAR2(10),
+    nom VARCHAR2(50),
     hores NUMBER,
     preu NUMBER,
     MEMBER FUNCTION coordinador RETURN VARCHAR2,
@@ -52,8 +52,8 @@ CREATE TABLE taula_cursos OF Curs (
 
 CREATE OR REPLACE TYPE Empleat AS OBJECT(
     dni VARCHAR2(10),
-    nom VARCHAR2(10),
-    cognoms VARCHAR2(10),
+    nom VARCHAR2(50),
+    cognoms VARCHAR2(50),
     dataContracte DATE,
     telefon VARCHAR2(12),
     MEMBER FUNCTION antiguitat RETURN NUMBER
@@ -69,7 +69,7 @@ CREATE TABLE taula_empleats OF Empleat (
 CREATE OR REPLACE TYPE CursActiu UNDER Curs(
 dataInici DATE, 
 dataFiPrevista DATE,
-modalitat VARCHAR2(10),
+modalitat VARCHAR2(50),
 MEMBER FUNCTION modulActual RETURN VARCHAR2
 );
 /
@@ -81,26 +81,26 @@ CREATE OR REPLACE TYPE CursHistoric UNDER Curs(
 /
 
 CREATE OR REPLACE TYPE Formador UNDER Empleat(
-    especialitat VARCHAR2(10),
-    nivell VARCHAR2(10)
+    especialitat VARCHAR2(50),
+    nivell VARCHAR2(50)
 );
 /
 
 CREATE OR REPLACE TYPE Coordinador UNDER Empleat(
-   area VARCHAR2(10),
-   despatx VARCHAR2(10)
+   area VARCHAR2(50),
+   despatx VARCHAR2(50)
 );
 /
 
 CREATE OR REPLACE TYPE Tecnic UNDER Empleat(
- certificacio VARCHAR2(10),
- sistema VARCHAR2(10)
+ certificacio VARCHAR2(50),
+ sistema VARCHAR2(50)
 );
 /
 
 CREATE OR REPLACE TYPE Modul AS OBJECT(
 idModul VARCHAR2(10),
-nom VARCHAR2(10),
+nom VARCHAR2(50),
 dataInici DATE,
 dataFi DATE,
 MEMBER FUNCTION numCursos RETURN NUMBER
@@ -148,9 +148,9 @@ INSERT INTO taula_moduls VALUES ('M123', 'Base de datos', TO_DATE('01-02-2026', 
 INSERT INTO taula_moduls VALUES ('M122', 'Multimedia', TO_DATE('05-02-2026', 'DD-MM-YYYY'), TO_DATE('10-06-2026','DD-MM-YYYY'));
 
 --Insertar datos en Empleados
-INSERT INTO taula_empleats VALUES (Formador('17382S8N', 'Jose', 'Luis', SYSDATE ,'1123389','SQL','Senior'));
-INSERT INTO taula_empleats VALUES (Coordinador('2678273B', 'Gerard', 'Perez', SYSDATE , '18392628', 'IT','D123'));
-INSERT INTO taula_empleats VALUES (Tecnic('3782627G', 'Jordi', 'Vila','22-02-2022', '67822828','LINUX','LINUX'));
+INSERT INTO taula_empleats VALUES (Formador('17382S8N', 'Jose', 'Luis', SYSDATE ,'1123389', 'SQL', 'Senior'));
+INSERT INTO taula_empleats VALUES (Coordinador('2678273B', 'Gerard', 'Perez', SYSDATE , '18392628', 'IT', 'D123'));
+INSERT INTO taula_empleats VALUES (Tecnic('3782627G', 'Jordi', 'Vila', TO_DATE('22-02-2022','DD-MM-YYYY'), '67822828', 'LINUX', 'LINUX'));
 
 -- Insertar datos en Cursos (incluyendo CursActiu y CursHistoric)
 INSERT INTO taula_cursos VALUES (CursActiu('C01', 'Java OO', 100, 500, TO_DATE('01-01-2026','DD-MM-YYYY'), TO_DATE('01-06-2026','DD-MM-YYYY'), 'Online'));
