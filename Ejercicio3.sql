@@ -263,7 +263,7 @@ WHERE VALUE(c) IS OF (CursActiu);
 
 --5. Ver en cuantos cursos aperece cada modulo
 SELECT nom, numCursos() AS aparecido
-FROM taula_moduls
+FROM taula_moduls;
 
 --6. Ver nombre del coordinado y si el curso es activo
 SELECT nom, coordinadir() AS responsable, actiu() AS activo
